@@ -97,26 +97,17 @@ def get_lemmatized_text(corpus):
 lemmatized_reviews = get_lemmatized_text(no_stop_words)
 
 
-# Function not working, but supposed to separate all words in reviews for counting
+# Function separates all words in reviews for counting
 def get_all_words(cleaned_tokens_list):
     for tokens in cleaned_tokens_list:
-        for token in tokens:
+        for token in tokens.split():
             yield token
 
-# Not working, aggregating all words for counting
+# Aggregating all words for counting
 all_words = get_all_words(lemmatized_reviews)
-
-
 
 
 
 freq_dist_pos = FreqDist(all_words)
 print(freq_dist_pos.most_common(100))
 
-
-from nltk.probability import ConditionalFreqDist
-from nltk.tokenize import word_tokenize
-cfdist = ConditionalFreqDist((len(word), word)
-                             for text in lemmatized_reviews
-                                for word in word_tokenize(text))
-print(cfdist)
