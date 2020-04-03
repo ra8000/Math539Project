@@ -3,9 +3,15 @@
 # Import Libraries -----------------------------------------------------------------------------------------------------
 import pandas as pd
 import nltk
+import numpy as np
 from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize
 from textblob import TextBlob  # Note: May need to pip install textblob
+import seaborn as sns
+import plotly.express as px
+import plotly.io as pio
+
+pio.renderers.default = "svg"
 
 # Switches -------------------------------------------------------------------------------------------------------------
 first_run = False  # If running for the first time, set True. Else, set False.
@@ -66,6 +72,21 @@ text_data["Review"] = text_data["Review"].str.replace(".", "")  # now that we ha
 # Things to consider: Removal of common/rare words, spelling correction, stemming and lemmatization
 
 # Sentiment Analysis ---------------------------------------------------------------------------------------------------
-test_sample = text_data.sample(n=10, random_state=1)  # sample to test sentiment
-test_sample["sentiment"] = test_sample["Review"].apply(lambda x: TextBlob(x).sentiment[0])  # detect sentiment
+text_data["Review"].fillna("", inplace=True)
+test_sample = text_data.sample(n=10, random_state=2)  # sample to test sentiment
+test_sample["Sentiment"] = test_sample["Review"].apply(lambda x: TextBlob(x).sentiment[0])  # detect sentiment
 print(test_sample)
+
+text_data["Polarity"] = text_data["Review"].apply(lambda x: TextBlob(x).sentiment[0])  # sentiment: polarity
+# text_data["Subjectivity"] = text_data["Review"].apply(lambda x: TextBlob(x).sentiment[1])  # sentiment: subjectivity
+sns.distplot(text_data["Polarity"])  # histogram of polarity
+# sns.distplot(text_data["Subjectivity"])
+
+print(text_data[text_data["Polarity"] == 1])  # examine reviews with polarity score = 1
+print(text_data[text_data["Polarity"] == -1])  # examine reviews with polarity score = 1
+print(text_data[text_data["Polarity"] == 0])  # examine reviews with polarity score = 0
+
+
+# Plotting -------------------------------------------------------------------------------------------------------------
+sns.set_style("ticks")
+sns.distplot(text_data["Polarity"])
